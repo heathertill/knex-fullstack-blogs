@@ -20,7 +20,6 @@ const OneBlog: React.FC<OneBlogProps> = ({ history, match: { params: { id } } })
         authorid: null,
     });
 
-
     const getBlog = async () => {
         try {
             let r = await fetch(`/api/blogs/${id}`);

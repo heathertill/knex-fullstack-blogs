@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import db from '../db';
+import queries from '../db'
 
 const router = Router();
 
 router.get('/', async (req, res) => {
     try {
-        res.json(await db.Tags.getAllTags())
+        res.json(await queries.Tags.getAllTags())
     } catch (err) {
         console.log(err);
         res.sendStatus(500);
@@ -15,8 +15,9 @@ router.get('/', async (req, res) => {
 router.get('/:blogid', async (req, res) => {
     let blogid = req.params.blogid
     try {
+        let tag = await queries.Tags.getTag(blogid);
         // res.json(((await db.Tags.getTag(blogid))[0])[0])
-        res.json((await db.Tags.getTag(blogid))[0][0])
+        res.json(tag[0])
     } catch (err) {
         console.log(err);
         res.sendStatus(500);
@@ -25,7 +26,7 @@ router.get('/:blogid', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        res.json(await db.Tags.createBlogTag(req.body.blogid, req.body.tagid))
+        res.json(await queries.Tags.createBlogTag(req.body))
     } catch (err) {
         console.log(err);
         res.sendStatus(500);
@@ -35,7 +36,7 @@ router.post('/', async (req, res) => {
 router.delete('/:blogid', async (req, res) => {
     let blogid = req.params.blogid
     try {
-        res.json(await db.Tags.deleteBlogTag(req.params.blogid))
+        res.json(await queries.Tags.deleteBlogTag(blogid))
     } catch (err) {
         console.log(err)
     }

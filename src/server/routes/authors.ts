@@ -1,16 +1,10 @@
 import { Router } from 'express';
-import db from '../db';
-
+import queries from '../db';
 const router = Router();
-
-
-
-
-
 
 router.get('/:name', async (req, res) => {
     try {
-        res.json((await db.Authors.getAuthId(req.params.name))[0])
+        res.json((await queries.Authors.getAuthId(req.params.name))[0])
     } catch (err) {
         console.log(err);
         res.sendStatus(500);

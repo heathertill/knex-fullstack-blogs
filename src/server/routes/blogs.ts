@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import db from '../db';
+import queries from '../db';
 
 const router = Router();
 
@@ -8,15 +8,15 @@ router.get('/:id?', async (req, res) => {
     let id = req.params.id
     if (id) {
         try {
-            // the [0] gets the blog object from the array
-            res.json(((await db.Blogs.one(id))[0])[0]);
+            let blog = await queries.Blogs.one(id);
+            res.json(blog[0]);
         } catch (err) {
             console.log(err);
             res.sendStatus(500);
         }
     } else {
         try {
-            res.json(await db.Blogs.all());
+            res.json(await queries.Blogs.all());
         } catch (err) {
             console.log(err);
             res.sendStatus(500);
@@ -26,7 +26,7 @@ router.get('/:id?', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        let newBlog = await db.Blogs.createBlog(req.body.title, req.body.content, req.body.authorid);
+        let newBlog = await queries.Blogs.createBlog(req.body);
         res.json(newBlog);
         
     } catch (err) {
@@ -36,8 +36,9 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
+    let id = req.params.id;
     try {
-        res.json(await db.Blogs.updateBlog(req.body.title,req.body.content, req.params.id))
+        res.json(await queries.Blogs.updateBlog(req.body, id))
     } catch (err) {
         console.log(err);
         res.sendStatus(500);
@@ -45,8 +46,9 @@ router.put('/:id', async (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
+    let id = req.params.id
     try {
-        res.json(await db.Blogs.deleteBlog(req.params.id))
+        res.json(await queries.Blogs.deleteBlog(id))
     } catch (err) {
         console.log(err);
         res.sendStatus(500);
